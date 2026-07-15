@@ -14,7 +14,7 @@ function JobsPage() {
 
     const handleUpdate = async (id, updatedData) => {
         try {
-            await API.patch(`/jobs/${id}`, updatedData)
+            await API.patch(`/jobs/${id}/`, updatedData)
             fetchJobs()
         } catch (error) {
             console.error(error.response.data)
