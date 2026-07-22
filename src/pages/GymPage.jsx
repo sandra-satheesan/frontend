@@ -9,14 +9,32 @@ function GymPage() {
         cardio_done: false,
         abs_done: false
     })
+    const [editingId, setEditingId] = useState(null)
+    const [editData, setEditData] = useState({})
 
-    const handleUpdate = async (id, updatedData) => {
+    const handleEdit = (workout) => {
+        setEditingId(workout.id)
+        setEditData({
+            workout_done: workout.workout_done,
+            strength_training: workout.strength_training,
+            cardio_done: workout.cardio_done,
+            abs_done: workout.abs_done
+        })
+    }
+
+    const handleUpdate = async (id) => {
         try {
-            await API.patch(`jobs/${id}/`, updatedData)
+            await API.patch(`/workouts/${id}/`, editData)
             fetchData()
+            setEditingId(null)
         } catch (error) {
             console.error(error.response.data)
         }
+    }
+
+    const handleEditChange = (e) => {
+        const { name, checked } = e.target
+        setEditData({ ...editData, [name]: checked })
     }
 
     const handleChange = (e) => {
@@ -88,6 +106,43 @@ function GymPage() {
                             <p className="text-gray-500">Abs: <span className="text-gray-300">{workout.abs_done ? 'Yes' : 'No'}</span></p>
                             <p className="text-gray-500">Workout Done: <span className="text-gray-300">{workout.workout_done ? 'Yes' : 'No'}</span></p>
                         </div>
+
+                        {editingId === workout.id ? (
+                            <div className="flex flex-col gap-2 mt-3">
+                                <label className="text-gray-400 text-sm flex items-center gap-2">
+                                    <input type="checkbox" name="workout_done" checked={editData.workout_done} onChange={handleEditChange} />
+                                    Workout Done
+                                </label>
+                                <label className="text-gray-400 text-sm flex items-center gap-2">
+                                    <input type="checkbox" name="strength_training" checked={editData.strength_training} onChange={handleEditChange} />
+                                    Strength Training
+                                </label>
+                                <label className="text-gray-400 text-sm flex items-center gap-2">
+                                    <input type="checkbox" name="cardio_done" checked={editData.cardio_done} onChange={handleEditChange} />
+                                    Cardio
+                                </label>
+                                <label className="text-gray-400 text-sm flex items-center gap-2">
+                                    <input type="checkbox" name="abs_done" checked={editData.abs_done} onChange={handleEditChange} />
+                                    Abs
+                                </label>
+                                <div className="flex gap-2 mt-2">
+                                    <button onClick={() => handleUpdate(workout.id)}
+                                        className="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1 rounded-lg">
+                                        Save
+                                    </button>
+                                    <button onClick={() => setEditingId(null)}
+                                        className="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-1 rounded-lg">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <button onClick={() => handleEdit(workout)}
+                                className="mt-3 text-xs text-orange-400 hover:text-orange-300">
+                                Edit
+                            </button>
+                        )}
+
                     </div>
                 ))}
             </div>

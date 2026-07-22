@@ -2,39 +2,47 @@ import { useState, useEffect } from 'react'
 import API from '../api/axios'
 
 function ProfilePage() {
-    const [profile, setProfile] = useState({})
+    const [user, setUser] = useState(null)
     useEffect(() => {
-        API.get('/profile/').then(response => setProfile(response.data[0]))
+        API.get('/auth/me/').then(response => setUser(response.data))
     }, [])
     return (
         <div>
-            <h1 className="text-2xl font-bold text-orange-500 mb-6">Profile Page</h1>
+            <h1 className="text-2xl font-bold text-orange-500 mb-6">Profile</h1>
+            {user ? (
+                <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                    <div className="grid grid-cols-2 gap-4">
 
-            <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
-                <h2 className="text-lg font-semibold text-white mb-4">Personal Details</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                    <div className="bg-gray-800 rounded-lg p-4">
-                        <p className="text-gray-400">Name</p>
-                        <p className="text-white font-medium">{profile.name}</p>
+                        <div>
+                            <p className="text-gray-500 text-sm">Username</p>
+                            <p className="text-white font-semibold">{user.username}</p>
+                        </div>
+
+                        <div>
+                            <p className="text-gray-500 text-sm">Email</p>
+                            <p className="text-white font-semibold">{user.email}</p>
+                        </div>
+
+                        <div>
+                            <p className="text-gray-500 text-sm">Date of Birth</p>
+                            <p className="text-white font-semibold">{user.dob}</p>
+                        </div>
+
+                        <div>
+                            <p className="text-gray-500 text-sm">Age</p>
+                            <p className="text-white font-semibold">{user.age} years</p>
+                        </div>
+
+                        <div>
+                            <p className="text-gray-500 text-sm">Height</p>
+                            <p className="text-white font-semibold">{user.height} cm</p>
+                        </div>
                     </div>
-                    <div className="bg-gray-800 rounded-lg p-4">
-                        <p className="text-gray-400">Age</p>
-                        <p className="text-white font-medium">{profile.age}</p>
-                    </div>
-                    <div className="bg-gray-800 rounded-lg p-4">
-                        <p className="text-gray-400">Height</p>
-                        <p className="text-white font-medium">{profile.height}</p>
-                    </div>
-                    <div className="bg-gray-800 rounded-lg p-4">
-                        <p className="text-gray-400">Weight</p>
-                        <p className="text-white font-medium">{profile.weight}</p>
-                    </div>
-                    <div className="bg-gray-800 rounded-lg p-4 sm:col-span-2">
-                        <p className="text-gray-400">BMI</p>
-                        <p className="text-white font-medium">{profile.bmi}</p>
-                    </div>
+
                 </div>
-            </div>
+            ) : (
+                <p className="text-gray-400">Loading...</p>
+            )}
         </div>
     )
 }
